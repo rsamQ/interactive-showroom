@@ -69,19 +69,17 @@ public class SwipeLeft : MonoBehaviour {
 
                             //right hand on the right of the right shoulder
                             if (handRight.Position.X > shoulderRight.Position.X){
+
                                 swipeSegment1 = true;
-                                swipeSegment2 = false;
-                                swipeComplete = false;
                                 //Debug.Log ("Part1 Occured");
-                            }else{
+                            }else {
                                 swipeSegment1 = false;
                             }
 
                             //right hand between right shoulder and left shoulder
                             if (handRight.Position.X < shoulderRight.Position.X && handRight.Position.X > shoulderLeft.Position.X){
+
                                 swipeSegment2 = true;
-                                swipeSegment1 = false;
-                                swipeComplete = false;
                                 //Debug.Log ("Part2 Occured");
                             }else{
                                 swipeSegment2 = false;
@@ -89,16 +87,16 @@ public class SwipeLeft : MonoBehaviour {
 
                             //right hand on the left of the left shoulder
                             if (handRight.Position.X < shoulderLeft.Position.X){
+                                
                                 swipeComplete = true;
-                                swipeSegment1 = false;
-                                swipeSegment2 = false;
-                                Debug.Log ("Gesture SwipeLeft Occured");
 
-                                //rotate earth positive around y axis
-                                gameObject.transform.RotateAround(target, Vector3.up, swipeSpeed);
+                                if(swipeComplete){
 
+                                    //rotate earth positive around y axis
+                                    gameObject.transform.RotateAround(target, Vector3.up, swipeSpeed);
+                                    Debug.Log ("Gesture SwipeLeft Occured");
+                                }
                                 //@Todo: schnellere swipeSpeed wenn zoomin
-
                             }else{
                                 swipeComplete = false;
                             }

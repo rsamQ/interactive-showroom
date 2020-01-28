@@ -68,9 +68,8 @@ public class SwipeRight : MonoBehaviour {
 
                             //right hand on the right of the right shoulder
                             if (handLeft.Position.X < shoulderLeft.Position.X){
+
                                 swipeSegment1 = true;
-                                swipeSegment2 = false;
-                                swipeComplete = false;
                                 //Debug.Log ("Part1 Occured");
                             }else{
                                 swipeSegment1 = false;
@@ -78,9 +77,8 @@ public class SwipeRight : MonoBehaviour {
 
                             //right hand between right shoulder and left shoulder
                             if (handLeft.Position.X < shoulderRight.Position.X && handLeft.Position.X > shoulderLeft.Position.X){
+
                                 swipeSegment2 = true;
-                                swipeSegment1 = false;
-                                swipeComplete = false;
                                 //Debug.Log ("Part2 Occured");
                             }else{
                                 swipeSegment2 = false;
@@ -88,16 +86,17 @@ public class SwipeRight : MonoBehaviour {
 
                             //right hand on the left of the left shoulder
                             if (handLeft.Position.X > shoulderRight.Position.X){
+
                                 swipeComplete = true;
-                                swipeSegment1 = false;
-                                swipeSegment2 = false;
-                                Debug.Log ("Gesture SwipeRight Occured");
 
-                                //rotate earth negative around y axis
-                                gameObject.transform.RotateAround(target, Vector3.up, -swipeSpeed);
+                                if(swipeComplete){
 
-                                //@Todo: schnellere swipeSpeed wenn zoomin
-                                
+                                    //rotate earth negative around y axis
+                                    gameObject.transform.RotateAround(target, Vector3.up, -swipeSpeed);
+                                    Debug.Log ("Gesture SwipeRight Occured");
+
+                                    //@Todo: schnellere swipeSpeed wenn zoomin
+                                }
                             }else{
                                 swipeComplete = false;
                             }
