@@ -10,9 +10,15 @@ public class SwipeRight : MonoBehaviour {
     public GameObject BodySrcManager;
     private BodySourceManager bodyManager;
     private Body[] bodies;
+
+    //segment variables
     public bool swipeSegment1;
     public bool swipeSegment2;
     public bool swipeComplete;
+
+    //rotation variables
+    private Vector3 target = new Vector3(0.0f, 0.0f, 0.0f);
+    private float swipeSpeed = 5f;
 
     void Start(){
         if(BodySrcManager == null){
@@ -35,49 +41,66 @@ public class SwipeRight : MonoBehaviour {
     }
 
         foreach(var body in bodies){
+
             if(body == null){
                 continue;
             }
+
             if(body.IsTracked){
 
-                //Swipe Right
-                if(body.Joints[JointType.HandLeft].Position.Z < body.Joints[JointType.ElbowLeft].Position.Z && body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.SpineMid].Position.Y){
-                    if (body.Joints[JointType.HandLeft].Position.Y < body.Joints[JointType.Head].Position.Y && body.Joints[JointType.HandLeft].Position.Y > body.Joints[JointType.SpineMid].Position.Y){
-                        if (body.Joints[JointType.HandLeft].Position.X < body.Joints[JointType.ShoulderLeft].Position.X){
-                            swipeSegment1 = true;
-                            swipeSegment2 = false;
-                            swipeComplete = false;
-                            Debug.Log ("Part1 Occured");
-                        }else{
-                            swipeSegment1 = false;
-                        }
-                    }
-                }
+                //Joint variables
+                var handLeft = body.Joints[JointType.HandLeft];
+                var handRight = body.Joints[JointType.HandRight];
+                var head = body.Joints[JointType.Head];
+                var elbowLeft = body.Joints[JointType.ElbowLeft];
+                var shoulderLeft = body.Joints[JointType.ShoulderLeft];
+                var shoulderRight = body.Joints[JointType.ShoulderRight];
+                var spineMid = body.Joints[JointType.SpineMid];
 
-                if (body.Joints[JointType.HandLeft].Position.Z < body.Joints[JointType.ElbowLeft].Position.Z && body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.SpineMid].Position.Y){
-                    if (body.Joints[JointType.HandLeft].Position.Y < body.Joints[JointType.Head].Position.Y && body.Joints[JointType.HandLeft].Position.Y > body.Joints[JointType.SpineMid].Position.Y){
-                        if (body.Joints[JointType.HandLeft].Position.X < body.Joints[JointType.ShoulderRight].Position.X && body.Joints[JointType.HandLeft].Position.X > body.Joints[JointType.ShoulderLeft].Position.X){
-                            swipeSegment2 = true;
-                            swipeSegment1 = false;
-                            swipeComplete = false;
-                            Debug.Log ("Part2 Occured");
-                        }else{
-                            swipeSegment2 = false;
-                        }
-                    }
-                }
+                // Swipe possible only between 1.5m and 0.5m 
+                if(head.Position.Z < 1.5f && head.Position.Z > 0.5f){
 
-                if (body.Joints[JointType.HandLeft].Position.Z < body.Joints[JointType.ElbowLeft].Position.Z && body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.SpineMid].Position.Y){
-                    if (body.Joints[JointType.HandLeft].Position.Y < body.Joints[JointType.Head].Position.Y && body.Joints[JointType.HandLeft].Position.Y > body.Joints[JointType.SpineMid].Position.Y){
-                        if (body.Joints[JointType.HandLeft].Position.X > body.Joints[JointType.ShoulderRight].Position.X){
-                            swipeComplete = true;
-                            swipeSegment1 = false;
-                            swipeSegment2 = false;
-                            Debug.Log ("Gesture Occured");
+                    //right hand in front of right elbow
+                    if(handLeft.Position.Z < elbowLeft.Position.Z){
 
-                            gameObject.transform.RotateAround(transform.position, transform.up, Time.deltaTime * - 180f);
-                        }else{
-                            swipeComplete = false;
+                        //right hand between head and spine mid
+                        if (handLeft.Position.Y < head.Position.Y && handLeft.Position.Y > spineMid.Position.Y){
+
+                            //right hand on the right of the right shoulder
+                            if (handLeft.Position.X < shoulderLeft.Position.X){
+                                swipeSegment1 = true;
+                                swipeSegment2 = false;
+                                swipeComplete = false;
+                                //Debug.Log ("Part1 Occured");
+                            }else{
+                                swipeSegment1 = false;
+                            }
+
+                            //right hand between right shoulder and left shoulder
+                            if (handLeft.Position.X < shoulderRight.Position.X && handLeft.Position.X > shoulderLeft.Position.X){
+                                swipeSegment2 = true;
+                                swipeSegment1 = false;
+                                swipeComplete = false;
+                                //Debug.Log ("Part2 Occured");
+                            }else{
+                                swipeSegment2 = false;
+                            }
+
+                            //right hand on the left of the left shoulder
+                            if (handLeft.Position.X > shoulderRight.Position.X){
+                                swipeComplete = true;
+                                swipeSegment1 = false;
+                                swipeSegment2 = false;
+                                Debug.Log ("Gesture SwipeRight Occured");
+
+                                //rotate earth negative around y axis
+                                gameObject.transform.RotateAround(target, Vector3.up, -swipeSpeed);
+
+                                //@Todo: schnellere swipeSpeed wenn zoomin
+                                
+                            }else{
+                                swipeComplete = false;
+                            }
                         }
                     }
                 }
