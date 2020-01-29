@@ -1,20 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-//using Microsoft.Kinect;
+using System.Collections.Generic;
 using Windows.Kinect;
-//using System;
 
 public class HandWaveGesture : MonoBehaviour {
     
     public GameObject BodySrcManager;
-    public JointType TrackedJoint;
+    //public JointType TrackedJoint;
     private BodySourceManager bodyManager;
-    public float multiplier = 10.0f;
     private Body[] bodies;
+
+
     public bool waveSegment1;
     public bool waveSegment2;
     public bool waveComplete;
+
+    //private int counter = 0;
 
     void Start(){
         if(BodySrcManager == null){
@@ -42,51 +43,48 @@ public class HandWaveGesture : MonoBehaviour {
             }
             if(body.IsTracked){
 
-                //Swipe Right
-                if(body.Joints[JointType.HandLeft].Position.Z < body.Joints[JointType.ElbowLeft].Position.Z && body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.SpineBase].Position.Y){
-                    if (body.Joints[JointType.HandLeft].Position.Y < body.Joints[JointType.Head].Position.Y && body.Joints[JointType.HandLeft].Position.Y > body.Joints[JointType.SpineBase].Position.Y){
-                        if (body.Joints[JointType.HandLeft].Position.X < body.Joints[JointType.ShoulderLeft].Position.X){
-                            waveSegment1 = true;
-                            waveSegment2 = false;
-                            waveComplete = false;
-                            Debug.Log ("Part1 Occured");
-                        }else{
-                            waveSegment1 = false;
-                        }
-                    }
+                List<string> segment = new List<string>();
+                //string[] array = new string[2];
+
+                // Hand above elbow
+                if (body.Joints[JointType.HandRight].Position.Y > 
+                    body.Joints[JointType.ElbowRight].Position.Y && 
+                    body.Joints[JointType.HandRight].Position.X > 
+                    body.Joints[JointType.ElbowRight].Position.X){
+
+                        //array[0] = "one";
+                        //Debug.Log ("Part1Wave Occured; array=" + array[0]);
+
+                        segment.Add("one");
+                }else{
+                    //array[0] = "blank";
+                    segment.Clear();
+                    break;
                 }
 
-                if (body.Joints[JointType.HandLeft].Position.Z < body.Joints[JointType.ElbowLeft].Position.Z && body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.SpineBase].Position.Y){
-                    if (body.Joints[JointType.HandLeft].Position.Y < body.Joints[JointType.Head].Position.Y && body.Joints[JointType.HandLeft].Position.Y > body.Joints[JointType.SpineBase].Position.Y){
-                        if (body.Joints[JointType.HandLeft].Position.X < body.Joints[JointType.ShoulderRight].Position.X && body.Joints[JointType.HandLeft].Position.X > body.Joints[JointType.ShoulderLeft].Position.X){
-                            waveSegment2 = true;
-                            waveSegment1 = false;
-                            waveComplete = false;
-                            Debug.Log ("Part2 Occured");
-                        }else{
-                            waveSegment2 = false;
-                        }
-                    }
+                if(body.Joints[JointType.HandRight].Position.Y > 
+                    body.Joints[JointType.ElbowRight].Position.Y && 
+                    body.Joints[JointType.HandRight].Position.X > 
+                    body.Joints[JointType.ElbowRight].Position.X){
+
+                        //array[1] = "two";
+                        //Debug.Log ("Part2Wave Occured; array=" + array[1]);
+                        segment.Add("two");
+                }else{
+                    //array[1] = "blank";
+                    segment.Clear();
+                    break;
                 }
 
-                if (body.Joints[JointType.HandLeft].Position.Z < body.Joints[JointType.ElbowLeft].Position.Z && body.Joints[JointType.HandRight].Position.Y < body.Joints[JointType.SpineBase].Position.Y){
-                    if (body.Joints[JointType.HandLeft].Position.Y < body.Joints[JointType.Head].Position.Y && body.Joints[JointType.HandLeft].Position.Y > body.Joints[JointType.SpineBase].Position.Y){
-                        if (body.Joints[JointType.HandLeft].Position.X > body.Joints[JointType.ShoulderRight].Position.X){
-                            waveComplete = true;
-                            waveSegment1 = false;
-                            waveSegment2 = false;
-                            Debug.Log ("Gesture Occured");
+                if(segment[0] == "one" && segment[1] == "two"){
 
-                            gameObject.transform.RotateAround(transform.position, transform.up, Time.deltaTime * - 90f);
-                            //gameObject.transform.RotateAround(transform.position, transform.up, multiplier * - 45f);
-                        }else{
-                            waveComplete = false;
-                        }
-                    }
+                    gameObject.transform.RotateAround(transform.position, transform.up, Time.deltaTime * -90f);
+                    Debug.Log ("Wave Occured");
+                    segment.Clear();
+                }else{
+                    gameObject.transform.RotateAround(transform.position, transform.up, Time.deltaTime * 0f);
                 }
-                
-                // Swipe Left
-
+                //Debug.Log(array[0] + "," + array[1]);
             }
         }
     }
@@ -109,42 +107,45 @@ public class HandWaveGesture : MonoBehaviour {
                 continue;
             }
             if(body.IsTracked){
-                //var pos = body.Joints[TrackedJoint].Position;
+
+                string[] array = new string[2];
 
                 // Hand above elbow
                 if (body.Joints[JointType.HandRight].Position.Y > 
-                    body.Joints[JointType.ElbowRight].Position.Y)
-                {
-                    // Hand right of elbow
-                    if (body.Joints[JointType.HandRight].Position.X > 
-                        body.Joints[JointType.ElbowRight].Position.X)
-                        {
-                            Debug.Log ("Part1Wave Occured");
-                            waveSegment1=true;
-                            waveComplete=false;
-                        }
-                    else
-                        {
-                            waveSegment1=false;
-                        }
-                }
-                if(body.Joints[JointType.HandRight].Position.Y > 
-                    body.Joints[JointType.ElbowRight].Position.Y && waveSegment1)
-                {
-                    if (body.Joints[JointType.HandRight].Position.X > 
-                        body.Joints[JointType.ElbowRight].Position.X)
-                        {
-                            waveSegment1=false;
-                            Debug.Log ("You have Completed a Wave");
-                            waveComplete=true;
+                    body.Joints[JointType.ElbowRight].Position.Y && 
+                    body.Joints[JointType.HandRight].Position.X > 
+                    body.Joints[JointType.ElbowRight].Position.X){
 
-                            //gameObject.transform.RotateAround(transform.position, transform.up, Time.deltaTime * -90f);
-                            
-                        }else { break; }
+                        array[0] = "one";
+                        Debug.Log ("Part1Wave Occured; array=" + array[0]);
+                }else{
+                    array[0] = "blank";
                 }
+
+                if(body.Joints[JointType.HandRight].Position.Y > 
+                    body.Joints[JointType.ElbowRight].Position.Y && 
+                    body.Joints[JointType.HandRight].Position.X > 
+                    body.Joints[JointType.ElbowRight].Position.X){
+
+                        array[1] = "two";
+                        Debug.Log ("Part2Wave Occured; array=" + array[1]);
+                }else{
+                    array[1] = "blank";
+                }
+
+                if(array[0] == "one" && array[1] == "two"){
+
+                    gameObject.transform.RotateAround(transform.position, transform.up, Time.deltaTime * -90f);
+                    Debug.Log ("Wave Occured");
+                    array[0] = "";
+                    array[1] = "";
+                }
+
+                Debug.Log(array[0] + "," + array[1]);
             }
         }
-    }*/
+    }
+}*/
 
 
     /*void WaveSegments()
