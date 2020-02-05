@@ -1,24 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-//using Microsoft.Kinect;
 using Windows.Kinect;
-//using System;
+using System;
 
 public class SwipeLeft : MonoBehaviour {
     
     public GameObject BodySrcManager;
     private BodySourceManager bodyManager;
     private Body[] bodies;
-
-    //segment variables
-    public bool swipeSegment1;
-    public bool swipeSegment2;
-    public bool swipeComplete;
-
-    //rotation variables
-    private Vector3 target = new Vector3(0.0f, 0.0f, 0.0f);
-    private float swipeSpeed = 5f;
 
     void Start(){
         if(BodySrcManager == null){
@@ -50,60 +39,53 @@ public class SwipeLeft : MonoBehaviour {
 
                 //Joint variables
                 var handLeft = body.Joints[JointType.HandLeft];
-                var handRight = body.Joints[JointType.HandRight];
                 var head = body.Joints[JointType.Head];
-                var elbowRight = body.Joints[JointType.ElbowRight];
+                var elbowLeft = body.Joints[JointType.ElbowLeft];
                 var shoulderLeft = body.Joints[JointType.ShoulderLeft];
-                var shoulderRight = body.Joints[JointType.ShoulderRight];
-                var spineMid = body.Joints[JointType.SpineMid];
-                var spineShoulder = body.Joints[JointType.SpineShoulder];
 
                 // Swipe possible only between 1.5m and 0.5m
                 if(head.Position.Z < 1.5f && head.Position.Z > 0.5f){
 
                     //right hand in front of right elbow
-                    if(handRight.Position.Z < elbowRight.Position.Z){
+                    if(handLeft.Position.Z < elbowLeft.Position.Z && body.HandLeftState == HandState.Closed){
 
-                        //right hand between head and spine mid
-                        if (handRight.Position.Y < head.Position.Y && handRight.Position.Y > spineMid.Position.Y){
+                        var num = handLeft.Position.X;
+                        double number = (double)(decimal)num;
+                        number = Math.Round((Double)number, 3);
+                        Debug.Log("double:" + number);
+                        
+                        if((number * 1000) % 2 == 0){   
 
-                            //right hand on the right of the right shoulder
-                            if (handRight.Position.X > shoulderRight.Position.X){
+                            float numberF = (float)number;
+                            Debug.Log("float: " + numberF);
 
-                                swipeSegment1 = true;
-                                //Debug.Log ("Part1 Occured");
-                            }else {
-                                swipeSegment1 = false;
-                            }
+                            //rotate earth clockwise around y axis
+                            gameObject.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
+                            gameObject.transform.Rotate(0.0f, 0.0f - (numberF * 2.5f), 0.0f, Space.World);
+                            Debug.Log ("Gesture SwipeLeft Occured; X=" + numberF);
+                        }
 
-                            //right hand between right shoulder and left shoulder
-                            if (handRight.Position.X < shoulderRight.Position.X && handRight.Position.X > shoulderLeft.Position.X){
-
-                                swipeSegment2 = true;
-                                //Debug.Log ("Part2 Occured");
-                            }else{
-                                swipeSegment2 = false;
-                            }
-
-                            //right hand on the left of the left shoulder
-                            if (handRight.Position.X < shoulderLeft.Position.X){
-                                
-                                swipeComplete = true;
-
-                                if(swipeComplete){
-
-                                    //rotate earth positive around y axis
-                                    gameObject.transform.RotateAround(target, Vector3.up, swipeSpeed);
-                                    Debug.Log ("Gesture SwipeLeft Occured");
-                                }
-                                //@Todo: schnellere swipeSpeed wenn zoomin
-                            }else{
-                                swipeComplete = false;
-                            }
+                        if(handLeft.Position.X == elbowLeft.Position.X){
+                            break;
                         }
                     }
                 }
             }
         }
     }
+
+    /*private void RotateEarth(float param){
+        var floatNum = param;
+        double doubleNum = (double)(decimal)floatNum;
+        doubleNum = Math.Round((Double)doubleNum, 2);
+
+        if((doubleNum * 1000) % 2 == 0){
+
+            float newFloat = (float)doubleNum;
+
+            gameObject.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
+            gameObject.transform.Rotate(0.0f, 0.0f - (newFloat * 2.5f), 0.0f, Space.World);
+            Debug.Log ("Gesture SwipeRight Occured; X=" + newFloat);
+        }
+    }*/
 }
