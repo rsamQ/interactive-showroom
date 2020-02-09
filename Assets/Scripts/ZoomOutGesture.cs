@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Windows.Kinect;
+using System;
 
 public class ZoomOutGesture : MonoBehaviour
 {
     public GameObject BodySrcManager;
     private BodySourceManager bodyManager;
     private Body[] bodies;
-    public bool zoomSegment1;
-    public bool zoomSegment2;
-    public bool zoomComplete;
+   
+    // zoom variables
     private int zoom = 20;
     private float smooth = 5;
 
@@ -35,80 +35,56 @@ public class ZoomOutGesture : MonoBehaviour
     }
 
         foreach(var body in bodies){
+
             if(body == null){
                 continue;
             }
-            if(body.IsTracked){
 
-                var handLeft = body.Joints[JointType.HandLeft];
-                var handRight = body.Joints[JointType.HandRight];
-                var elbowRight = body.Joints[JointType.ElbowRight];
-                var elbowLeft = body.Joints[JointType.ElbowLeft];
-                var shoulderLeft = body.Joints[JointType.ShoulderLeft];
-                var shoulderRight = body.Joints[JointType.ShoulderRight];
-                var spineMid = body.Joints[JointType.SpineMid]; // was before spinebase
-                var spineShoulder = body.Joints[JointType.SpineShoulder];
+            float distance = 1000;
+            float distanceNew = body.Joints[JointType.Head].Position.Z;
 
-                // Right and Left Hand in front of Shoulders
-                if (handLeft.Position.Z < elbowLeft.Position.Z && handRight.Position.Z < elbowRight.Position.Z)
-                {
-                    // Hands between shoulder and hip
-                    if (handRight.Position.Y < spineShoulder.Position.Y && handRight.Position.Y > spineMid.Position.Y &&
-                        handLeft.Position.Y < spineShoulder.Position.Y && handLeft.Position.Y > spineMid.Position.Y)
-                    {
-                        // Hands outside elbows
-                        if (handRight.Position.X > elbowRight.Position.X && handLeft.Position.X < elbowLeft.Position.X)
-                        {
-                            zoomSegment1 = true;
-                            zoomSegment2 = false;
-                            zoomComplete = false;
-                            //Debug.Log ("Part1 Occured");
-                        }else{
-                            zoomSegment1 = false;
-                        }
-                    }
-                }
+            if (distanceNew !=0 && distanceNew <= distance){
+                distance = distanceNew;
 
-                // Right and Left Hand in front of Shoulders
-                if (handLeft.Position.Z < elbowLeft.Position.Z && handRight.Position.Z < elbowRight.Position.Z)
-                {
-                    // Hands between shoulder and hip
-                    if (handRight.Position.Y < spineShoulder.Position.Y && handRight.Position.Y > spineMid.Position.Y &&
-                        handLeft.Position.Y < spineShoulder.Position.Y && handLeft.Position.Y > spineMid.Position.Y)
-                    {
-                        // Hands outside shoulders
-                        if (handRight.Position.X > shoulderRight.Position.X && handLeft.Position.X < shoulderLeft.Position.X)
-                        {
-                            zoomSegment2 = true;
-                            zoomSegment1 = false;
-                            zoomComplete = false;
-                            //Debug.Log ("Part2 Occured");
-                        }else{
-                            zoomSegment2 = false;
-                        }
-                    }
-                }
+                if(body.IsTracked){
 
-                // Right and Left Hand in front of Shoulders
-                if (handLeft.Position.Z < elbowLeft.Position.Z && handRight.Position.Z < elbowRight.Position.Z)
-                {
-                    // Hands between shoulder and hip
-                    if (handRight.Position.Y < spineShoulder.Position.Y && handRight.Position.Y > spineMid.Position.Y &&
-                        handLeft.Position.Y < spineShoulder.Position.Y && handLeft.Position.Y > spineMid.Position.Y)
-                    {
-                        // Hands between shoulders
-                        if (handRight.Position.X < shoulderRight.Position.X && handRight.Position.X > shoulderLeft.Position.X &&
-                            handLeft.Position.X > shoulderLeft.Position.X && handLeft.Position.X < shoulderRight.Position.X)
-                        {
-                            zoomComplete = true;
-                            zoomSegment1 = false;
-                            zoomSegment2 = false;
-                            Debug.Log ("Gesture ZoomOut Occured");
+                    var handLeft = body.Joints[JointType.HandLeft];
+                    var handRight = body.Joints[JointType.HandRight];
+                    var elbowRight = body.Joints[JointType.ElbowRight];
+                    var elbowLeft = body.Joints[JointType.ElbowLeft];
+                    var shoulderLeft = body.Joints[JointType.ShoulderLeft];
+                    var shoulderRight = body.Joints[JointType.ShoulderRight];
+                    var head = body.Joints[JointType.Head];
 
-                            GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, -zoom, Time.deltaTime * smooth);
-                            Debug.Log(GetComponent<Camera>().fieldOfView);
-                        }else{
-                            zoomComplete = false;
+
+                    // Zoom possible only between 1.5m and 0.5m
+                    if(head.Position.Z < 3.0f && head.Position.Z > 1.0f){
+
+                        //hands in front of elbows
+                        if(handRight.Position.Z < shoulderRight.Position.Z && handLeft.Position.X < shoulderLeft.Position.Z
+                        && handRight.Position.X > shoulderRight.Position.X && handLeft.Position.X < shoulderLeft.Position.X
+                        && body.HandRightState == HandState.Closed && body.HandLeftState == HandState.Closed){
+
+                            //
+                            double numberRight = (double)(decimal)handRight.Position.X;
+                            double numberLeft = (double)(decimal)handLeft.Position.X;
+                            numberRight = Math.Round((Double)numberRight, 4);
+                            numberLeft = Math.Round((Double)numberLeft, 4);
+                            //Debug.Log("HandRight_double:" + numberRight + ", HandLeft_double:" + numberLeft);
+
+                            //
+                            if((numberRight * 10000) % 2 == 0 && (numberLeft * 10000) % 2 == 0 && Camera.main.fieldOfView < 60.0f){
+                                
+                                //
+                                Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, 60.0f, Time.deltaTime * 5.0f);
+                                //Debug.Log ("ZoomOut: HandRight.X = " + numberRight + ", HandLeft.X" + numberLeft + ", Field of view = " + Camera.main.fieldOfView);
+                                
+                            }
+
+                            //
+                            if (handRight.Position.X < (shoulderRight.Position.X / 2.0f) && handLeft.Position.X > (shoulderLeft.Position.X / 2.0f)){
+                                break;
+                            }
                         }
                     }
                 }

@@ -39,33 +39,36 @@ public class SwipeLeft : MonoBehaviour {
 
                 //Joint variables
                 var handLeft = body.Joints[JointType.HandLeft];
+                var wristLeft = body.Joints[JointType.WristLeft];
                 var head = body.Joints[JointType.Head];
                 var elbowLeft = body.Joints[JointType.ElbowLeft];
                 var shoulderLeft = body.Joints[JointType.ShoulderLeft];
 
                 // Swipe possible only between 1.5m and 0.5m
-                if(head.Position.Z < 1.5f && head.Position.Z > 0.5f){
+                if(head.Position.Z < 3f && head.Position.Z > 1.5f){
 
                     //right hand in front of right elbow
-                    if(handLeft.Position.Z < elbowLeft.Position.Z && body.HandLeftState == HandState.Closed){
+                    if(handLeft.Position.Z < elbowLeft.Position.Z && handLeft.Position.X > elbowLeft.Position.X 
+                        && handLeft.Position.Y > wristLeft.Position.Y && body.HandLeftState == HandState.Closed){
 
+                        //Debug.Log(handleft.Relativetime.TotalSeconds / 1000);
                         var num = handLeft.Position.X;
                         double number = (double)(decimal)num;
                         number = Math.Round((Double)number, 3);
                         Debug.Log("double:" + number);
                         
-                        if((number * 1000) % 2 == 0){   
+                        if((number * 10000) % 2 == 0){   
 
                             float numberF = (float)number;
                             Debug.Log("float: " + numberF);
 
                             //rotate earth clockwise around y axis
                             gameObject.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
-                            gameObject.transform.Rotate(0.0f, 0.0f - (numberF * 2.5f), 0.0f, Space.World);
+                            gameObject.transform.Rotate(0.0f, 2.0f, 0.0f, Space.World);
                             Debug.Log ("Gesture SwipeLeft Occured; X=" + numberF);
                         }
 
-                        if(handLeft.Position.X == elbowLeft.Position.X){
+                        if(handLeft.Position.X < elbowLeft.Position.X){
                             break;
                         }
                     }

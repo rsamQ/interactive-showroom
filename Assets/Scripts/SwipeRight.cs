@@ -39,15 +39,17 @@ public class SwipeRight : MonoBehaviour {
 
                 //Joint variables
                 var handRight = body.Joints[JointType.HandRight];
+                var wristRight = body.Joints[JointType.WristRight];
                 var head = body.Joints[JointType.Head];
                 var elbowRight = body.Joints[JointType.ElbowRight];
                 var shoulderRight = body.Joints[JointType.ShoulderRight];
 
                 // Swipe possible only between 1.5m and 0.5m
-                if(head.Position.Z < 1.5f && head.Position.Z > 0.5f){
+                if(head.Position.Z < 3f && head.Position.Z > 1.5f){
 
                     //right hand in front of right elbow
-                    if(handRight.Position.Z < elbowRight.Position.Z && body.HandRightState == HandState.Closed){
+                    if(handRight.Position.Z < elbowRight.Position.Z && handRight.Position.X < elbowRight.Position.X 
+                        && handRight.Position.Y > wristRight.Position.Y && body.HandRightState == HandState.Closed ){
 
                         //RotateEarth(handRight.Position.X);
 
@@ -56,20 +58,20 @@ public class SwipeRight : MonoBehaviour {
                         number = Math.Round((Double)number, 3);
                         Debug.Log("double:" + number);
 
-                        if((number * 1000) % 2 == 0){
+                        if((number * 10000) % 2 == 0){
 
                             float numberF = (float)number;
                             Debug.Log("float: " + numberF);
 
                             //rotate earth counter-clockwise around y axis
                             gameObject.transform.position = new Vector3(0.0f, 0.0f, 0.0f);
-                            gameObject.transform.Rotate(0.0f, 0.0f - (numberF * 2.5f), 0.0f, Space.World);
+                            gameObject.transform.Rotate(0.0f, -2.0f, 0.0f, Space.World);
                             Debug.Log ("Gesture SwipeRight Occured; X=" + numberF);
 
                         }
 
                         //right hand on the right of the right shoulder
-                        if (handRight.Position.X == elbowRight.Position.X){
+                        if (handRight.Position.X > elbowRight.Position.X){
                             break;
                         }
                     }
