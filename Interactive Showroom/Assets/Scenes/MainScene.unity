@@ -237,9 +237,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75149cfda3bdcb49b21eb4189f85d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  mat: {fileID: 2100000, guid: e5b007d811018da4b98457184073eb15, type: 2}
   alpha: 0
-  obj: {fileID: 0}
+  obj: {fileID: 1723612434}
 --- !u!64 &40789584
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -371,9 +371,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75149cfda3bdcb49b21eb4189f85d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  mat: {fileID: 2100000, guid: 3a2bdfe6c4646654fad41aeabfe50f01, type: 2}
   alpha: 0
-  obj: {fileID: 0}
+  obj: {fileID: 384926364}
 --- !u!64 &279670838
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -608,6 +608,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 599025784}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &599025786 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: ac48d61a4200b264aa89bc903fbc73a7,
+    type: 3}
+  m_PrefabInstance: {fileID: 599025784}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &600252027
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -725,9 +731,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75149cfda3bdcb49b21eb4189f85d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  mat: {fileID: 2100000, guid: 528037f8279fcb5469ab0149f10d591f, type: 2}
   alpha: 0
-  obj: {fileID: 0}
+  obj: {fileID: 1151145748}
 --- !u!64 &600252030
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -984,9 +990,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75149cfda3bdcb49b21eb4189f85d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  mat: {fileID: 2100000, guid: 0241b28a1a59a954b83774662f990c43, type: 2}
   alpha: 0
-  obj: {fileID: 0}
+  obj: {fileID: 694341472}
 --- !u!64 &981907647
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1460,9 +1466,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75149cfda3bdcb49b21eb4189f85d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  mat: {fileID: 2100000, guid: c79777a39165726409ea24d297aced31, type: 2}
   alpha: 0
-  obj: {fileID: 0}
+  obj: {fileID: 1194248245}
 --- !u!64 &1600869058
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -1768,6 +1774,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2087082901}
+  - component: {fileID: 2087082903}
+  - component: {fileID: 2087082902}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -1790,6 +1798,37 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2087082902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087082900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbe4bfede6e7bbe4e8f80fd30eabd038, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cursor: {fileID: 1372625219}
+  earth: {fileID: 599025786}
+--- !u!114 &2087082903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2087082900}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1e84e29af41e7d4ab10403d5cbc186e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rayLength: 20
+  layermask:
+    serializedVersion: 2
+    m_Bits: 512
+  obj: {fileID: 1372625219}
 --- !u!1001 &2117359668
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1907,9 +1946,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b75149cfda3bdcb49b21eb4189f85d2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  mat: {fileID: 2100000, guid: b73b991273fb74340b52940e6996c0db, type: 2}
   alpha: 0
-  obj: {fileID: 0}
+  obj: {fileID: 2141604307}
 --- !u!64 &2117359671
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2021,7 +2060,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sharedProfile: {fileID: 0}
+  sharedProfile: {fileID: 11400000, guid: 8a3b99d07a41e274e9e3152eb0b74f87, type: 2}
   isGlobal: 1
   blendDistance: 0
   weight: 1
