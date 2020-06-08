@@ -61,7 +61,7 @@ public class ZoomOutGesture : MonoBehaviour
                     if(head.Position.Z < 3.0f && head.Position.Z > 1.0f){
 
                         //hands in front of elbows
-                        if(handRight.Position.Z < shoulderRight.Position.Z && handLeft.Position.X < shoulderLeft.Position.Z
+                        if(handRight.Position.Z < shoulderRight.Position.Z && handLeft.Position.Z < shoulderLeft.Position.Z
                         && handRight.Position.X > shoulderRight.Position.X && handLeft.Position.X < shoulderLeft.Position.X
                         && body.HandRightState == HandState.Closed && body.HandLeftState == HandState.Closed){
 
