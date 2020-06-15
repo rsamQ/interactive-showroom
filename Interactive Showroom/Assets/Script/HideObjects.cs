@@ -6,27 +6,22 @@ public class HideObjects : MonoBehaviour
 {
     // Public variables
     public Material mat;
+    //public GameObject obj;
     public float alpha;
-    public GameObject obj;
 
     // Private variables
-    MeshRenderer rend;
+    Material rend;
     Color myColor;
 
     // Start is called before the first frame update
     void Start(){
         
         // Get rim object MeshRenderer
-        rend = GetComponent<MeshRenderer>();
-
-        // Set alpha value of rim object to 0
-        rend.material.SetColor("_BaseColor", myColor);
-        myColor = rend.material.color;
-        myColor.a = 0.0f;
-        rend.material.color = myColor;
+        rend = GetComponent<MeshRenderer>().material;
         
-        // Set parent material alpha value to 0 
+        // Set parent and child material alpha value to 0 
         alpha = 0.0f;
+        rend.SetFloat("_Alpha", alpha);
         mat.SetFloat("_Alpha", alpha);
     }
 

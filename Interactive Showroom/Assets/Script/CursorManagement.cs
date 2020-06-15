@@ -8,30 +8,44 @@ public class CursorManagement : MonoBehaviour
     public float rayLength;
     public LayerMask layermask;
     public GameObject obj;
+
+    // Sprite
+    private SpriteRenderer rend;
+    public Sprite handCursor;
+    public Sprite cursor;
     
 
-    // Continent material variables
-    private Material mat;
-    private float alpha;
-
-
-    // Continent border material/object variables
+    // Material variables
+    private Material parent;
+    private Material child;
     private MeshRenderer main;
-    private MeshRenderer child;
-    private Color myColor;
+    private float alpha;
+    
 
     // Boolean for coroutine(IEnum) activation
     private bool startRoutine = false;
+
+    public float timeBtwSpawn = 0.005f;
+    public GameObject clickEffect;
+
+
+    // Testing variables 
+    void Start(){
+      Cursor.visible = false;
+      rend = obj.GetComponent<SpriteRenderer>();
+    }
 
 
     // Update is called once per frame
     void Update(){
 
-      // Cursor on mouse postion
-      Vector3 temp = Input.mousePosition; // @Todo: Replace with Kinect data
-      temp.z = 10.0f;
-      this.transform.position = Camera.main.ScreenToWorldPoint(temp);
-      
+      CursorMovement();
+      GenerateRaycast();
+
+    }
+
+
+    void GenerateRaycast(){
 
       // Create RayCast
       RaycastHit hit;
@@ -42,12 +56,14 @@ public class CursorManagement : MonoBehaviour
       // Show/Hide continents on RaycastHit (Cursor hover over continent)
       if(Physics.Raycast(_ray, out hit, rayLength, layermask)){
 
-        //Debug.Log(hit.collider.name);
+        //Debug.Log("new Name: " + hit.collider.name);
 
         // Get hit continents and set them to variables for alpha manipulation
-        mat = hit.collider.gameObject.GetComponent<MeshRenderer>().material;          // Material of hit object
+        parent = hit.collider.gameObject.GetComponent<MeshRenderer>().material;          // Material of hit object
         main = hit.collider.gameObject.GetComponent<MeshRenderer>();                  // Continent object
-        child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();   // Continent border object (child from continent)
+        child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material;   // Continent border object (child from continent)
+
+        rend.sprite = handCursor;
 
         if(!startRoutine){
           
@@ -57,8 +73,29 @@ public class CursorManagement : MonoBehaviour
 
       }else if(startRoutine){
         
+        rend.sprite = cursor;  
         StartCoroutine("FadeOut");
 
+      }
+    }
+
+
+    void CursorMovement(){
+
+      // Cursor on mouse position
+      Vector3 mousePos = Input.mousePosition; // @Todo: Replace with Vector3 mousePos = new Vector3(coord.x, coord.y, coord.z);
+      transform.position = mousePos;
+      mousePos.z = 20;                        // @Todo: not needed with kinect data (siehe @todo)
+      Vector3 newPos = Camera.main.ScreenToWorldPoint(mousePos);
+      transform.position = newPos;
+
+      // Create instantiated Particle System
+      if(timeBtwSpawn <= 0){
+        newPos.z = newPos.z + 0.1f;
+        Instantiate(clickEffect, newPos, Quaternion.identity);
+        timeBtwSpawn = 0.005f;
+      }else {
+        timeBtwSpawn -= Time.deltaTime;
       }
     }
        
@@ -68,13 +105,10 @@ public class CursorManagement : MonoBehaviour
 
       startRoutine = true;
       
-      for(alpha = 0f; alpha <= 1.55; alpha += 0.05f){
+      for(alpha = 0.0f; alpha <= 1.55; alpha += 0.05f){
 
-          myColor = child.material.color;
-          myColor.a = alpha;
-          child.material.SetColor("_BaseColor", myColor);
-
-          mat.SetFloat("_Alpha", alpha);
+          child.SetFloat("_Alpha", alpha);
+          parent.SetFloat("_Alpha", alpha);
           yield return new WaitForSeconds(0.005f);
       }
     }
@@ -85,13 +119,10 @@ public class CursorManagement : MonoBehaviour
 
       startRoutine = false;
       
-      for (alpha = 1f; alpha >= -0.05f; alpha -= 0.05f){
+      for (alpha = 0.80f; alpha >= -0.05f; alpha -= 0.05f){
 
-          myColor = child.material.color;
-          myColor.a = alpha;
-          child.material.SetColor("_BaseColor", myColor);
-
-          mat.SetFloat("_Alpha", alpha);
+          child.SetFloat("_Alpha", alpha);
+          parent.SetFloat("_Alpha", alpha);
           yield return new WaitForSeconds(0.005f);
       }
     }
@@ -107,7 +138,7 @@ public class CursorManagement : MonoBehaviour
         myColor.a = alpha;
 
         child.material.SetColor("_BaseColor", myColor);
-        mat.SetFloat("_Alpha", alpha);
+       parent.SetFloat("_Alpha", alpha);
 
       }else{
 
@@ -117,6 +148,6 @@ public class CursorManagement : MonoBehaviour
         myColor.a = alpha;
         
         child.material.SetColor("_BaseColor", myColor);
-        mat.SetFloat("_Alpha", alpha);
+       parent.SetFloat("_Alpha", alpha);
 
       }*/
