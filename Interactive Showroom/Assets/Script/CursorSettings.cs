@@ -9,17 +9,28 @@ public class CursorSettings : MonoBehaviour
     public GameObject cursor;
     public GameObject earth;
 
+    // Sprite
+    private SpriteRenderer rend;
+    public Sprite dragCursor;
+    public Sprite mainCursor;
+
     // Private variables
     float rotSpeed = 10f;
     Vector3 mPrevPos = Vector3.zero;
     Vector3 mPosDelta = Vector3.zero;
 
+    void Start(){
+      rend = cursor.GetComponent<SpriteRenderer>();
+    }
+
     // Update is called once per frame
     void Update(){
 
-      if(Input.GetMouseButton(0)){
+      if(Input.GetMouseButton(0)){    // Replace with if(handState == "closed")
 
-        //
+        rend.sprite = dragCursor;
+
+        // position = aktuelle position - vorhergehende position
         mPosDelta = cursor.transform.position - mPrevPos;
 
         //
@@ -38,7 +49,12 @@ public class CursorSettings : MonoBehaviour
         //
         earth.transform.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta, Camera.main.transform.up * rotSpeed), Space.World);
 
+      }else{
+        
+        rend.sprite = mainCursor;
+
       }
+
 
       //
       mPrevPos = cursor.transform.position;
