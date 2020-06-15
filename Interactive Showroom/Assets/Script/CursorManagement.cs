@@ -85,9 +85,10 @@ public class CursorManagement : MonoBehaviour
       // Cursor on mouse position
       Vector3 mousePos = Input.mousePosition; // @Todo: Replace with Vector3 mousePos = new Vector3(coord.x, coord.y, coord.z);
       transform.position = mousePos;
-      mousePos.z = 20;                        // @Todo: not needed with kinect data (siehe @todo)
+      mousePos.z = 10.0f;                        // @Todo: not needed with kinect data (siehe @todo)
       Vector3 newPos = Camera.main.ScreenToWorldPoint(mousePos);
       transform.position = newPos;
+
 
       // Create instantiated Particle System
       if(timeBtwSpawn <= 0){
