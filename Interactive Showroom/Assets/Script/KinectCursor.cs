@@ -97,10 +97,10 @@ public class KinectCursor : MonoBehaviour
 
                     if(handLeft.Position.Y > handRight.Position.Y){
                         CursorMovement(handLeft.Position.X, handLeft.Position.Y);
-                        GenerateRaycast(body);
+                        GenerateRaycast(body, handLeft.Position.Y, handRight.Position.Y);
                     }else if(handRight.Position.Y > handLeft.Position.Y){
                         CursorMovement(handRight.Position.X, handRight.Position.Y);
-                        GenerateRaycast(body);
+                        GenerateRaycast(body, handLeft.Position.Y, handRight.Position.Y);
                     }
                 }
             }
@@ -129,7 +129,7 @@ public class KinectCursor : MonoBehaviour
 
 
 
-    void GenerateRaycast(Body body){
+    void GenerateRaycast(Body body, float x, float y){
 
         // Create RayCast
         RaycastHit hit;
@@ -149,7 +149,7 @@ public class KinectCursor : MonoBehaviour
             child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material;    // Continent border object (child from continent)
 
             // 
-            if(body.HandRightState != HandState.Closed && body.HandLeftState != HandState.Closed){
+            if(x > y && body.HandLeftState != HandState.Closed || y > x && body.HandRightState != HandState.Closed){
                 rend.sprite = handCursor;
             }
 
@@ -177,7 +177,7 @@ public class KinectCursor : MonoBehaviour
                 } 
             } // end of foreach 
 
-            // show canvas ui if hover longer than 2 sec on contients
+            // show canvas ui if hovering longer than 2 sec on contients
             string newName = "Canvas" + main.name;
             foreach(GameObject canvas in uiCanvas){
                 if(canvas.layer == 5){
@@ -185,7 +185,7 @@ public class KinectCursor : MonoBehaviour
                         canvas.SetActive(true);
                         timer = 0.0f;
                     }
-                    if(body.HandRightState != HandState.Closed && body.HandLeftState != HandState.Closed){
+                    if(x > y && body.HandLeftState == HandState.Closed || y > x && body.HandRightState == HandState.Closed){
                         canvas.SetActive(false);
                     }
                 }
