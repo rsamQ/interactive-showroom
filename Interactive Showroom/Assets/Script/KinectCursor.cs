@@ -169,7 +169,6 @@ public class KinectCursor : MonoBehaviour
                     MeshRenderer parentObject = parent.GetComponent<MeshRenderer>();
                     MeshRenderer childObject = parentObject.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
 
-
                     if(parentObject.material.name == parentName){
                         Show(alpha, parentObject, childObject);
                     }else{
@@ -185,6 +184,9 @@ public class KinectCursor : MonoBehaviour
                     if(canvas.name == newName && timer > waitTime){
                         canvas.SetActive(true);
                         timer = 0.0f;
+                    }
+                    if(body.HandRightState != HandState.Closed && body.HandLeftState != HandState.Closed){
+                        canvas.SetActive(false);
                     }
                 }
             }

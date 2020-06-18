@@ -110,6 +110,9 @@ public class CursorManagement : MonoBehaviour
                 canvas.SetActive(true);
                 timer = 0.0f;
             }
+            if(Input.GetMouseButton(0)){
+                canvas.SetActive(false);
+            }
           }
         }
 
