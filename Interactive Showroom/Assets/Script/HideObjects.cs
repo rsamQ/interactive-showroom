@@ -17,7 +17,7 @@ public class HideObjects : MonoBehaviour
     void Start(){
         
         // Get rim object MeshRenderer
-        rend = GetComponent<MeshRenderer>().material;
+        rend = this.GetComponent<MeshRenderer>().material;
         
         // Set parent and child material alpha value to 0 
         alpha = 0.0f;

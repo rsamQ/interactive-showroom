@@ -4,93 +4,128 @@ using UnityEngine;
 
 public class CursorManagement : MonoBehaviour
 {
-    // Public RayCast variables
-    public float rayLength;
+    // Public RayCastForContinents variables
+    private float rayLength = 20.0f;
     public LayerMask layermask;
     public GameObject obj;
 
     // Sprite
-    private SpriteRenderer rend;
-    public Sprite handCursor;
+    private SpriteRenderer spriteRend;
     public Sprite cursor;
+    public Sprite handCursor;
     
-
     // Material variables
     private Material parent;
     private Material child;
     private MeshRenderer main;
     private float alpha;
-    
 
-    // Boolean for coroutine(IEnum) activation
-    private bool startRoutine = false;
+    // Variables for timed hover gesture
+    private float waitTime = 2.0f;
+    private float timer = 0.0f;
+    public GameObject uiCanvas;
 
+    // Particle System Trail 
     public float timeBtwSpawn = 0.005f;
     public GameObject clickEffect;
+
 
 
     // Testing variables 
     void Start(){
       Cursor.visible = false;
-      rend = obj.GetComponent<SpriteRenderer>();
+      spriteRend = obj.GetComponent<SpriteRenderer>();
+
+      uiCanvas.SetActive(false);
     }
+
 
 
     // Update is called once per frame
     void Update(){
-
       CursorMovement();
-      GenerateRaycast();
-
+      GenerateRaycastForContinents();
     }
 
+        
 
-    void GenerateRaycast(){
+    void GenerateRaycastForContinents(){
 
       // Create RayCast
       RaycastHit hit;
       Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position); // WorldToScreenPoint of object position for perspective correction
       Ray _ray = Camera.main.ScreenPointToRay(pos);
 
-
       // Show/Hide continents on RaycastHit (Cursor hover over continent)
       if(Physics.Raycast(_ray, out hit, rayLength, layermask)){
 
-        //Debug.Log("new Name: " + hit.collider.name);
+        timer += Time.deltaTime;
 
         // Get hit continents and set them to variables for alpha manipulation
-        parent = hit.collider.gameObject.GetComponent<MeshRenderer>().material;          // Material of hit object
-        main = hit.collider.gameObject.GetComponent<MeshRenderer>();                  // Continent object
-        child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material;   // Continent border object (child from continent)
+        parent = hit.collider.gameObject.GetComponent<MeshRenderer>().sharedMaterial;                 // Material of hit object
+        main = hit.collider.gameObject.GetComponent<MeshRenderer>();                                  // Continent object
+        child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().sharedMaterial;    // Continent border object (child from continent)
 
-        rend.sprite = handCursor;
-
-        if(!startRoutine){
-          
-          StartCoroutine("FadeIn");
-
+        // No hand cursor if drag cursor is active
+        if(!Input.GetMouseButton(0)){
+          spriteRend.sprite = handCursor;
         }
 
-      }else if(startRoutine){
-        
-        rend.sprite = cursor;  
-        StartCoroutine("FadeOut");
+        // Change object material name to string
+        string parentName = parent.name;
+        Debug.Log(parentName);
 
+
+        // Set up GameObject array for all selectable continents
+        GameObject[] parents  = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+
+        // Get all continents on selectable layer
+        foreach(GameObject parent in parents){
+
+          if(parent.layer == 9){
+
+            // Get MeshRenderer from all continent objects including rim and change them to 0
+            // except for hit continent
+            MeshRenderer parentObject = parent.GetComponent<MeshRenderer>();
+            MeshRenderer childObject = parentObject.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
+
+            if(parentObject.material.name == parentName){
+              Show(alpha, parentObject, childObject);
+            }else{
+              Hide(alpha, parentObject, childObject);
+            }
+          }
+        } 
+
+        // show canvas ui if hover longer than 2 sec on contients
+        string newName = "Canvas" + main.name;
+        //Debug.Log(newName);
+        if(newName ==  uiCanvas.name && timer > waitTime){
+            uiCanvas.SetActive(true);
+        }
+
+      // on miss change back to main cursor and fade out continent
+      }else{
+        alpha = 0.0f;
+        child.SetFloat("_Alpha", alpha);
+        parent.SetFloat("_Alpha", alpha);
       }
     }
 
 
+
+    //
     void CursorMovement(){
 
       // Cursor on mouse position
-      Vector3 mousePos = Input.mousePosition; // @Todo: Replace with Vector3 mousePos = new Vector3(coord.x, coord.y, coord.z);
+      Vector3 mousePos = Input.mousePosition;
       transform.position = mousePos;
-      mousePos.z = 10.0f;                        // @Todo: not needed with kinect data (siehe @todo)
+      mousePos.z = 10.0f;    
+
       Vector3 newPos = Camera.main.ScreenToWorldPoint(mousePos);
       transform.position = newPos;
 
-
-      // Create instantiated Particle System
+      // Create instantiated Particle System on cursor position after specific time
       if(timeBtwSpawn <= 0){
         newPos.z = newPos.z + 0.1f;
         Instantiate(clickEffect, newPos, Quaternion.identity);
@@ -99,56 +134,18 @@ public class CursorManagement : MonoBehaviour
         timeBtwSpawn -= Time.deltaTime;
       }
     }
-       
 
-    // Fade in continents
-    IEnumerator FadeIn(){
 
-      startRoutine = true;
-      
-      for(alpha = 0.0f; alpha <= 1.55; alpha += 0.05f){
-
-          child.SetFloat("_Alpha", alpha);
-          parent.SetFloat("_Alpha", alpha);
-          yield return new WaitForSeconds(0.005f);
-      }
+    void Show(float alpha, MeshRenderer parentObject, MeshRenderer childObject){
+      alpha = 1.0f;
+      parentObject.material.SetFloat("_Alpha", alpha);
+      childObject.material.SetFloat("_Alpha", alpha);
     }
 
-
-    // Fade out continents
-    IEnumerator FadeOut(){
-
-      startRoutine = false;
-      
-      for (alpha = 0.80f; alpha >= -0.05f; alpha -= 0.05f){
-
-          child.SetFloat("_Alpha", alpha);
-          parent.SetFloat("_Alpha", alpha);
-          yield return new WaitForSeconds(0.005f);
-      }
+    void Hide(float alpha, MeshRenderer parentObject, MeshRenderer childObject){
+      alpha = 0.0f;
+      parentObject.material.SetFloat("_Alpha", alpha);
+      childObject.material.SetFloat("_Alpha", alpha);
     }
 
 }
-
-        /* Code for Debugging and testing without transition.
-        Implemented after getting hit continent. */
-
-        // Set alpha
-        /*alpha = 1.0f;
-        myColor = child.material.color;
-        myColor.a = alpha;
-
-        child.material.SetColor("_BaseColor", myColor);
-       parent.SetFloat("_Alpha", alpha);
-
-      }else{
-
-        // Set alpha
-        alpha = 0.0f;
-        myColor = child.material.color;
-        myColor.a = alpha;
-        
-        child.material.SetColor("_BaseColor", myColor);
-       parent.SetFloat("_Alpha", alpha);
-
-      }*/

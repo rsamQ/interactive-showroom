@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7140017878337378116}
   - component: {fileID: 7140017878337378117}
   - component: {fileID: 7140017878337378118}
-  - component: {fileID: 7481898435456530956}
+  - component: {fileID: 7351027346930313241}
   m_Layer: 0
   m_Name: Triangle Effect
   m_TagString: Untagged
@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 7140017878337378119}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.19189465, y: 1.2198331, z: -0.13259935}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -4763,7 +4763,7 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &7481898435456530956
+--- !u!114 &7351027346930313241
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
