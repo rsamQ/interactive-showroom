@@ -24,7 +24,7 @@ public class KinectCursor : MonoBehaviour
     // Variables for timed hover gesture
     private float waitTime = 2.0f;
     private float timer = 0.0f;
-    public GameObject uiCanvas;
+    private GameObject[] uiCanvas;
 
     // Particle Effect variables
     private float timeBtwSpawn = 0.005f;
@@ -42,7 +42,12 @@ public class KinectCursor : MonoBehaviour
         Cursor.visible = false;
         rend = obj.GetComponent<SpriteRenderer>();
 
-        uiCanvas.SetActive(false);
+        uiCanvas = GameObject.FindGameObjectsWithTag("UI") as GameObject[];
+        foreach(GameObject canvas in uiCanvas){
+            //Debug.Log("one: " + canvas);
+            if(canvas.layer == 5)
+            canvas.SetActive(false);
+        }
 
         if(BodySrcManager == null){
             Debug.Log("add Body Source Manager");
@@ -175,9 +180,13 @@ public class KinectCursor : MonoBehaviour
 
             // show canvas ui if hover longer than 2 sec on contients
             string newName = "Canvas" + main.name;
-            //Debug.Log(newName);
-            if(newName ==  uiCanvas.name && timer > waitTime){
-                uiCanvas.SetActive(true);
+            foreach(GameObject canvas in uiCanvas){
+                if(canvas.layer == 5){
+                    if(canvas.name == newName && timer > waitTime){
+                        canvas.SetActive(true);
+                        timer = 0.0f;
+                    }
+                }
             }
 
             // on miss change back to main cursor and fade out continent

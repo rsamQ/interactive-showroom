@@ -4,7 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - ExitButton
+  - UI
   layers:
   - Default
   - TransparentFX
