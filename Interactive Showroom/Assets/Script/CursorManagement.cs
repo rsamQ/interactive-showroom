@@ -104,14 +104,15 @@ public class CursorManagement : MonoBehaviour
         
         // show canvas ui if hover longer than 2 sec on contients
         string newName = "Canvas" + main.name;
+        Debug.Log(newName);
         foreach(GameObject canvas in uiCanvas){
           if(canvas.layer == 5){
             if(canvas.name == newName && timer > waitTime){
                 canvas.SetActive(true);
                 timer = 0.0f;
             }
-            if(Input.GetMouseButton(0)){
-                canvas.SetActive(false);
+            if(canvas.name != newName){
+              canvas.SetActive(false);
             }
           }
         }

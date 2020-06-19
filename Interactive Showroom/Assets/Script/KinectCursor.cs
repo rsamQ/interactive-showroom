@@ -185,7 +185,7 @@ public class KinectCursor : MonoBehaviour
                         canvas.SetActive(true);
                         timer = 0.0f;
                     }
-                    if(x > y && body.HandLeftState == HandState.Closed || y > x && body.HandRightState == HandState.Closed){
+                    if(canvas.name != newName){
                         canvas.SetActive(false);
                     }
                 }
