@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HideObjects : MonoBehaviour
+public class HideContinents : MonoBehaviour
 {
     // Public variables
     public Material mat;

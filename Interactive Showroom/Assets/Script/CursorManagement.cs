@@ -25,16 +25,28 @@ public class CursorManagement : MonoBehaviour
     private float timer = 0.0f;
     private GameObject[] uiCanvas;
 
+    // UI variables
+    private GameObject raycastBlocker;
+    private GameObject exitButton;
+
     // Particle System Trail 
     public float timeBtwSpawn = 0.005f;
     public GameObject clickEffect;
 
 
-
-    // Testing variables 
+ 
     void Start(){
+      // Hide Cursor on Start and set cursor sprite
       Cursor.visible = false;
       spriteRend = obj.GetComponent<SpriteRenderer>();
+
+      // Hide raycastBlocker on start, which blocks raycast
+      raycastBlocker = GameObject.Find("RaycastBlocker");
+      raycastBlocker.SetActive(false);
+
+      // Hide UI elements on start (ExitButton and continent canvas)
+      exitButton = GameObject.Find("ExitButton");
+      exitButton.SetActive(false);
 
       uiCanvas = GameObject.FindGameObjectsWithTag("UI") as GameObject[];
       foreach(GameObject canvas in uiCanvas){
@@ -49,13 +61,12 @@ public class CursorManagement : MonoBehaviour
     // Update is called once per frame
     void Update(){
       CursorMovement();
-      GenerateRaycastForContinents();
+      RaycastAndContinentHighlight();
     }
 
         
 
-    void GenerateRaycastForContinents(){
-
+    void RaycastAndContinentHighlight(){
       // Create RayCast
       RaycastHit hit;
       Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position); // WorldToScreenPoint of object position for perspective correction
@@ -64,29 +75,27 @@ public class CursorManagement : MonoBehaviour
       // Show/Hide continents on RaycastHit (Cursor hover over continent)
       if(Physics.Raycast(_ray, out hit, rayLength, layermask)){
 
+        // Timer for 
         timer += Time.deltaTime;
 
-        // Get hit continents and set them to variables for alpha manipulation
-        parent = hit.collider.gameObject.GetComponent<MeshRenderer>().sharedMaterial;                 // Material of hit object
-        main = hit.collider.gameObject.GetComponent<MeshRenderer>();                                  // Continent object
-        child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().sharedMaterial;    // Continent border object (child from continent)
-
+        // Get hit continents
+        main = hit.collider.gameObject.GetComponent<MeshRenderer>();
+        
         // No hand cursor if drag cursor is active
         if(!Input.GetMouseButton(0)){
           spriteRend.sprite = handCursor;
         }
 
         // Change object material name to string
-        string parentName = parent.name;
-        //Debug.Log(parentName);
-
+        string parentName = main.sharedMaterial.name;
 
         // Set up GameObject array for all selectable continents
-        GameObject[] parents  = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        GameObject[] parents  = GameObject.FindGameObjectsWithTag("Continent") as GameObject[];
 
         // Get all continents on selectable layer
         foreach(GameObject parent in parents){
 
+          // Is GameObject on Selectable rendering layer
           if(parent.layer == 9){
 
             // Get MeshRenderer from all continent objects including rim and change them to 0
@@ -101,24 +110,18 @@ public class CursorManagement : MonoBehaviour
             }
           }
         } 
-        
         // show canvas ui if hover longer than 2 sec on contients
-        string newName = "Canvas" + main.name;
-        Debug.Log(newName);
-        foreach(GameObject canvas in uiCanvas){
-          if(canvas.layer == 5){
-            if(canvas.name == newName && timer > waitTime){
-                canvas.SetActive(true);
-                timer = 0.0f;
-            }
-            if(canvas.name != newName){
-              canvas.SetActive(false);
-            }
-          }
-        }
+        HoverGesture(main);
 
       // on miss change back to main cursor and fade out continent
       }else{
+
+        // Get continent and continent rim material
+        /* @Todo: fix child out of bounds if possible */
+        parent = main.sharedMaterial;
+        child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().sharedMaterial;
+
+        // Set material alpha value to 0
         alpha = 0.0f;
         child.SetFloat("_Alpha", alpha);
         parent.SetFloat("_Alpha", alpha);
@@ -126,8 +129,35 @@ public class CursorManagement : MonoBehaviour
     }
 
 
+    // show canvas ui if hover longer than 2 sec on contients
+    void HoverGesture(MeshRenderer main){
 
-    //
+      string newName = "Canvas" + main.name;
+      
+      foreach(GameObject canvas in uiCanvas){
+        
+        // Is GameObject on Selectable rendering layer
+        if(canvas.layer == 5){
+
+          // Show Ui on hover on continent for over 2 seconds
+          if(canvas.name == newName && timer > waitTime){
+              canvas.SetActive(true);
+              exitButton.SetActive(true);
+              raycastBlocker.SetActive(true);
+              timer = 0.0f;
+          }
+          // Hide UI on hover on ExitButton for over 2 seconds
+          if(main.name == "ExitButton" && timer > waitTime){
+            exitButton.SetActive(false);
+            raycastBlocker.SetActive(false);
+            timer = 0.0f;
+          }
+        }
+      }
+    }
+
+
+
     void CursorMovement(){
 
       // Cursor on mouse position
@@ -149,12 +179,17 @@ public class CursorManagement : MonoBehaviour
     }
 
 
+
+    // Show continent and continent rim on raycast hit
     void Show(float alpha, MeshRenderer parentObject, MeshRenderer childObject){
       alpha = 1.0f;
       parentObject.material.SetFloat("_Alpha", alpha);
       childObject.material.SetFloat("_Alpha", alpha);
     }
 
+
+
+    // Hide continent and continent rim on raycast hit
     void Hide(float alpha, MeshRenderer parentObject, MeshRenderer childObject){
       alpha = 0.0f;
       parentObject.material.SetFloat("_Alpha", alpha);
