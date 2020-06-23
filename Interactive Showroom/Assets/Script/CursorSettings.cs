@@ -6,13 +6,13 @@ public class CursorSettings : MonoBehaviour
 {
 
     // Public variables
-    public GameObject cursor;
     public GameObject earth;
+    public GameObject cursor;
 
     // Sprite
     private SpriteRenderer rend;
-    public Sprite dragCursor;
     public Sprite mainCursor;
+    public Sprite dragCursor;
 
     // Private variables
     float rotSpeed = 10f;
