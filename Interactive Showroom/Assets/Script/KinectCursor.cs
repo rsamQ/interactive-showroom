@@ -22,7 +22,7 @@ public class KinectCursor : MonoBehaviour
     private float alpha;
 
     // Variables for timed hover gesture
-    private float waitTime = 2.0f;
+    private float waitTime = 3.0f;
     private float timer = 0.0f;
     private GameObject[] uiCanvas;
 
@@ -38,6 +38,7 @@ public class KinectCursor : MonoBehaviour
     public GameObject BodySrcManager;
     private BodySourceManager bodyManager;
     private Body[] bodies;
+    private float multiplier = 10.0f;
 
 
 
@@ -190,15 +191,14 @@ public class KinectCursor : MonoBehaviour
     void CursorMovement(float x, float y){
 
         // Cursor on mouse position
-        Vector3 mousePos = new Vector3(x, y, 10.0f); // @Todo: Replace with Vector3 mousePos = new Vector3(coord.x, coord.y, coord.z);
-        Vector3 newPos = Camera.main.ScreenToWorldPoint(mousePos);
-        transform.position = newPos;
+        Vector3 mousePos = new Vector3(x * multiplier, y * multiplier, -10.0f); 
+        transform.position = mousePos;
 
 
         // Create instantiated Particle System at Cursor position
         if(timeBtwSpawn <= 0){
-            newPos.z = newPos.z + 0.1f;
-            Instantiate(clickEffect, newPos, Quaternion.identity);
+            mousePos.z = mousePos.z + 0.1f;
+            Instantiate(clickEffect, mousePos, Quaternion.identity);
             timeBtwSpawn = 0.005f;
         }else {
             timeBtwSpawn -= Time.deltaTime;
