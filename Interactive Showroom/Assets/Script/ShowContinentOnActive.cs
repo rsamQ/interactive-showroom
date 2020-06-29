@@ -80,7 +80,7 @@ public class ShowContinentOnActive : MonoBehaviour
         }else if(obj.name == "Canvas" + conti[4]){
             earth.transform.localEulerAngles = new Vector3(-127.0f, 5.0f, -195.0f);
         }else if(obj.name == "Canvas" + conti[5]){
-            earth.transform.localEulerAngles = new Vector3(-108.0f, -173.0f, -16.0f);
+            earth.transform.localEulerAngles = new Vector3(-65.769f, -30.017f, -121.765f);
         }
     }
 
