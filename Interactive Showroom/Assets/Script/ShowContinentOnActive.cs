@@ -18,11 +18,21 @@ public class ShowContinentOnActive : MonoBehaviour
 
     // Rotation variables
     private bool rotation = true;
-    private float rotationSpeed = 10.0f;
+    private float rotationSpeed = 100.0f;  
+    private Vector3[] continentRotation;
     
 
     void Start(){
-        conti = new string[] {"Africa", "Asia", "Australia", "Europa", "NorthAmerica", "SouthAmerica"};
+        conti = new string[] {"Africa", "Asia", "Australia", "Europa", "NorthAmerica", "SouthAmerica"};   
+
+        continentRotation = new[] {
+            new Vector3(-90.0f, 0.0f, -70.0f),
+            new Vector3(-125.0f, 1.5f, -13.5f),
+            new Vector3(-120.0f, 167.0f, -122.5f),
+            new Vector3(-133.5f, -1.5f, -70.0f),
+            new Vector3(-127.0f, 5.0f, -195.0f),
+            new Vector3(-65.769f, -30.017f, -121.765f)
+        };
 
         // Get parent and child MeshRenderer for the belonging continent, if selected
         foreach(string contiName in conti){
@@ -69,19 +79,33 @@ public class ShowContinentOnActive : MonoBehaviour
 
         GameObject earth = GameObject.Find("Earth");
 
+        // can't close Ui, infinity loop?
+        /*for(int i = 0; i <= conti.Length; i++){
+            if(obj.name == "Canvas" + conti[i]){
+                Quaternion targetRotation = Quaternion.Euler(continentRotation[i]);
+                earth.transform.rotation = Quaternion.RotateTowards(earth.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            }
+        }*/
+
         if(obj.name == "Canvas" + conti[0]){
-            earth.transform.localEulerAngles = new Vector3(-90.0f, 0.0f, -70.0f);
+            Quaternion targetRotation = Quaternion.Euler(-90.0f, 0.0f, -70.0f);
+            earth.transform.rotation = Quaternion.RotateTowards(earth.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }else if(obj.name == "Canvas" + conti[1]){
-            earth.transform.localEulerAngles = new Vector3(-125.0f, 1.5f, -13.5f);
+            Quaternion targetRotation = Quaternion.Euler(-125.0f, 1.5f, -13.5f);
+            earth.transform.rotation = Quaternion.RotateTowards(earth.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }else if(obj.name == "Canvas" + conti[2]){
-            earth.transform.localEulerAngles = new Vector3(-120.0f, 167.0f, -122.5f);
+            Quaternion targetRotation = Quaternion.Euler(-120.0f, 167.0f, -122.5f);
+            earth.transform.rotation = Quaternion.RotateTowards(earth.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }else if(obj.name == "Canvas" + conti[3]){
-            earth.transform.localEulerAngles = new Vector3(-133.5f, -1.5f, -70.0f);
+            Quaternion targetRotation = Quaternion.Euler(-133.5f, -1.5f, -70.0f);
+            earth.transform.rotation = Quaternion.RotateTowards(earth.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }else if(obj.name == "Canvas" + conti[4]){
-            earth.transform.localEulerAngles = new Vector3(-127.0f, 5.0f, -195.0f);
+            Quaternion targetRotation = Quaternion.Euler(-127.0f, 5.0f, -195.0f);
+            earth.transform.rotation = Quaternion.RotateTowards(earth.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }else if(obj.name == "Canvas" + conti[5]){
-            earth.transform.localEulerAngles = new Vector3(-65.769f, -30.017f, -121.765f);
-        }
+            Quaternion targetRotation = Quaternion.Euler(-65.769f, -30.017f, -121.765f);
+            earth.transform.rotation = Quaternion.RotateTowards(earth.transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }       
     }
 
 }
