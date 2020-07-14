@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f611d797432e3f846885b2b12fde5f35, type: 3}
+  m_Name: Questions
+  m_EditorClassIdentifier: 
+  questions:
+  - questionInfo: "Africa has 17% of the world\u2019s population. But how much does
+      it contribute to global carbon emissions?"
+    questionType: 0
+    questionImage: {fileID: 0}
+    audioClip: {fileID: 0}
+    videoClip: {fileID: 0}
+    options:
+    - 17%
+    - 10%
+    - 4%
+    - 4%
+    correctAns: 4%
+  - questionInfo: Which continent does the UN say will be hit hardest by climate change?
+    questionType: 0
+    questionImage: {fileID: 0}
+    audioClip: {fileID: 0}
+    videoClip: {fileID: 0}
+    options:
+    - Europe
+    - Africa
+    - South America
+    - Australasia
+    correctAns: Africa
+  - questionInfo: Which of the lifestyle choices below would be the most effective
+      in reducing your carbon footprint?
+    questionType: 0
+    questionImage: {fileID: 0}
+    audioClip: {fileID: 0}
+    videoClip: {fileID: 0}
+    options:
+    - Recycling
+    - Eating a plant-based diet.
+    - Drying your clothes out in the sun.
+    - Drying your clothes out in the sun.
+    correctAns: Eating a plant-based diet.
+  - questionInfo: Africa has a lot of coastal cities. From the options below, what
+      is the biggest risk they face from climate change?
+    questionType: 0
+    questionImage: {fileID: 0}
+    audioClip: {fileID: 0}
+    videoClip: {fileID: 0}
+    options:
+    - The extinction of marine species leading to food shortages.
+    - "Houses built by the ocean aren\u2019t made to withstand extreme changes in
+      temperature."
+    - As sea levels rise, these cities will be more prone to flooding.
+    - As sea levels rise, these cities will be more prone to flooding.
+    correctAns: As sea levels rise, these cities will be more prone to flooding.
+  - questionInfo: Which of these types of crops cultivated in Africa is most vulnerable
+      to climate change?
+    questionType: 0
+    questionImage: {fileID: 0}
+    audioClip: {fileID: 0}
+    videoClip: {fileID: 0}
+    options:
+    - Peanuts
+    - Maize
+    - Cassava
+    - Sorghum
+    correctAns: Maize
+  - questionInfo: "Out of the world\u2019s top 10 countries most vulnerable to climate
+      change, how many are in Africa?"
+    questionType: 0
+    questionImage: {fileID: 0}
+    audioClip: {fileID: 0}
+    videoClip: {fileID: 0}
+    options:
+    - 7
+    - 6
+    - 8
+    - 4
+    correctAns: 7
