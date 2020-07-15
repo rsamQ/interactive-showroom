@@ -27,8 +27,8 @@ public class ShowContinentOnActive : MonoBehaviour
 
         // Get parent and child MeshRenderer for the belonging continent, if selected
         foreach(string contiName in conti){
-            string co = "Canvas" + contiName;
-            if(obj.name == co){
+            string coName = "Canvas" + contiName;
+            if(obj.name == coName){
                 continent = GameObject.Find(contiName);
                 parent = continent.GetComponent<MeshRenderer>();
                 child = parent.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
@@ -40,11 +40,12 @@ public class ShowContinentOnActive : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // if ui is active, show belonging continent and rotate it to front
         if(obj.activeSelf == true){
-            //Debug.Log(obj.name);
             alpha = 1.0f;
             parent.material.SetFloat("_Alpha", alpha);
             child.material.SetFloat("_Alpha", alpha);
+
             if(rotation == true){
                 rotation = false;
                 RotateContinentToFront();
@@ -55,6 +56,8 @@ public class ShowContinentOnActive : MonoBehaviour
             child.material.SetFloat("_Alpha", alpha);
             
         }
+
+        // if exitbutton is "pressed" hide ui
         if(exitButton.activeSelf == false){
             obj.SetActive(false);
         }
@@ -68,6 +71,7 @@ public class ShowContinentOnActive : MonoBehaviour
 
         rotation = true;
 
+        // Get earth gameobject
         GameObject earth = GameObject.Find("Earth");
 
         if(obj.name == "Canvas" + conti[0]){

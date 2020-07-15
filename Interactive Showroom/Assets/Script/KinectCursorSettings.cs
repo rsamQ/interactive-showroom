@@ -6,109 +6,107 @@ using Windows.Kinect;
 public class KinectCursorSettings : MonoBehaviour
 {
 
-    // Public variables
-    public GameObject earth;
-    public GameObject cursor;
+  // Public variables
+  public GameObject earth;
+  public GameObject cursor;
 
+  // Sprite
+  private SpriteRenderer rend;
+  public Sprite mainCursor;
+  public Sprite dragCursor;
 
-    // Sprite
-    private SpriteRenderer rend;
-    public Sprite mainCursor;
-    public Sprite dragCursor;
+  // Private variables
+  float rotSpeed = 10f;
+  Vector3 mPrevPos = Vector3.zero;
+  Vector3 mPosDelta = Vector3.zero;
 
-
-    // Private variables
-    float rotSpeed = 10f;
-    Vector3 mPrevPos = Vector3.zero;
-    Vector3 mPosDelta = Vector3.zero;
-
-
-    // Kinect Data
-    public GameObject BodySrcManager;
-    private BodySourceManager bodyManager;
-    private Body[] bodies;
+  // Kinect Data
+  public GameObject BodySrcManager;
+  private BodySourceManager bodyManager;
+  private Body[] bodies;
 
 
 
-    //
-    void Start(){
-        rend = cursor.GetComponent<SpriteRenderer>();
+  // Called once at Start of Game
+  void Start(){
 
-        if(BodySrcManager == null){
-            Debug.Log("add Body Source Manager");
-        }else{
-            bodyManager = BodySrcManager.GetComponent<BodySourceManager>();
-        }
+    // Get SpriteRenderer from cursor
+    rend = cursor.GetComponent<SpriteRenderer>();
+
+    // Get Body Source Manager Data
+    if(BodySrcManager == null){
+        Debug.Log("add Body Source Manager");
+    }else{
+        bodyManager = BodySrcManager.GetComponent<BodySourceManager>();
     }
+  }
 
 
 
-    // Update is called once per frame
-    void Update(){
+  // Update is called once per frame
+  void Update(){
 
-      if(bodyManager == null){
-            return;
+    // Check if BodyManager is available
+    if(bodyManager == null){
+          return;
+      }
+
+      bodies = bodyManager.GetData();
+
+      if(bodies == null){
+          return;
+      }
+
+      foreach(var body in bodies){
+
+        if(body == null){
+            continue;
         }
 
-        bodies = bodyManager.GetData();
+        // Set default distance
+        float distance = 1000;
 
-        if(bodies == null){
-            return;
-        }
+        // Set 2nd distance to tracked persons head position
+        float distanceNew = body.Joints[JointType.Head].Position.Z;
 
-        foreach(var body in bodies){
+        //
+        if (distanceNew !=0 && distanceNew <= distance){
+            distance = distanceNew;
 
-            if(body == null){
-                continue;
-            }
+          if(body.IsTracked){
 
-            float distance = 1000;
-            float distanceNew = body.Joints[JointType.Head].Position.Z;
+            // Joint variables
+            var handLeft = body.Joints[JointType.HandLeft];
+            var handRight = body.Joints[JointType.HandRight];
 
-            if (distanceNew !=0 && distanceNew <= distance){
-                distance = distanceNew;
+            // One hand over the other and hand is closed
+            if(handLeft.Position.Y > handRight.Position.Y && body.HandLeftState == HandState.Closed
+            || handRight.Position.Y > handLeft.Position.Y && body.HandRightState == HandState.Closed){
+              
+              // Drag sprite on drag gesture
+              rend.sprite = dragCursor;
 
-              if(body.IsTracked){
+              // position = current position - previous position
+              mPosDelta = cursor.transform.position - mPrevPos;
 
-                //Joint variables
-                var handLeft = body.Joints[JointType.HandLeft];
-                var handRight = body.Joints[JointType.HandRight];
-
-                //
-                if(handLeft.Position.Y > handRight.Position.Y && body.HandLeftState == HandState.Closed
-                || handRight.Position.Y > handLeft.Position.Y && body.HandRightState == HandState.Closed){    // Replace with if(handState == "closed")
-                  
-                  //
-                  rend.sprite = dragCursor;
-
-                  // position = aktuelle position - vorhergehende position
-                  mPosDelta = cursor.transform.position - mPrevPos;
-
-                  //
-                  if(Vector3.Dot(transform.up, Vector3.up) >= 0){
-
-                    //
-                    earth.transform.Rotate(transform.up, -Vector3.Dot(mPosDelta, Camera.main.transform.right * rotSpeed), Space.World);
-                  }else{
-
-                    //
-                    earth.transform.Rotate(transform.up, Vector3.Dot(mPosDelta, Camera.main.transform.right * rotSpeed), Space.World);
-                  }
-
-                  //
-                  earth.transform.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta, Camera.main.transform.up * rotSpeed), Space.World);
-
-                }else{
-
-                  //
-                  rend.sprite = mainCursor;
-                }
-
-                //
-                mPrevPos = cursor.transform.position;
+              // 
+              if(Vector3.Dot(transform.up, Vector3.up) >= 0){
+                earth.transform.Rotate(transform.up, -Vector3.Dot(mPosDelta, Camera.main.transform.right * rotSpeed), Space.World);
+              }else{
+                earth.transform.Rotate(transform.up, Vector3.Dot(mPosDelta, Camera.main.transform.right * rotSpeed), Space.World);
               }
+              earth.transform.Rotate(Camera.main.transform.right, Vector3.Dot(mPosDelta, Camera.main.transform.up * rotSpeed), Space.World);
+            }else{
+
+              // Standard Cursor if no drag gesture
+              rend.sprite = mainCursor;
             }
+
+          // new previous position = current position
+          mPrevPos = cursor.transform.position;
         }
+      }
     }
+  }
 }
 

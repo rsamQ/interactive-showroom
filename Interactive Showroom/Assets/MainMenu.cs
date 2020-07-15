@@ -8,36 +8,36 @@ public class MainMenu : MonoBehaviour
 
     public void ClickClimateWorld()
     {
-        SceneManager.UnloadScene("MainMenuScene");
-        SceneManager.LoadScene("WorldScene");
+        SceneManager.UnloadSceneAsync("MainMenuScene");
+        SceneManager.LoadSceneAsync("WorldScene");
 
     }
 
     public void ClickQuiz()
     {
-        SceneManager.UnloadScene("MainMenuScene");
-        SceneManager.LoadScene("GameScene");
+        SceneManager.UnloadSceneAsync("MainMenuScene");
+        SceneManager.LoadSceneAsync("GameScene");
 
     }
 
      public void ClickVideo()
     {
-        SceneManager.UnloadScene("MainMenuScene");
-        SceneManager.LoadScene("IntroScene");
+        SceneManager.UnloadSceneAsync("MainMenuScene");
+        SceneManager.LoadSceneAsync("IntroScene");
 
     }
 
     public void ClickImpressum()
     {
-        SceneManager.UnloadScene("MainMenuScene");
-        SceneManager.LoadScene("Impressum");
+        SceneManager.UnloadSceneAsync("MainMenuScene");
+        SceneManager.LoadSceneAsync("Impressum");
 
     }
 
     public void ClickExitImpressum()
     {
-        SceneManager.UnloadScene("Impressum");
-        SceneManager.LoadScene("MainMenuScene");
+        SceneManager.UnloadSceneAsync("Impressum");
+        SceneManager.LoadSceneAsync("MainMenuScene");
 
     }
 }

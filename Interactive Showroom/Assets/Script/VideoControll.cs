@@ -59,8 +59,8 @@ public class VideoControll : MonoBehaviour
 
         if (framec < 0.20)
         {
-            SceneManager.UnloadScene("IntroScene");
-            SceneManager.LoadScene("MainMenuScene");
+            SceneManager.UnloadSceneAsync("IntroScene");
+            SceneManager.LoadSceneAsync("MainMenuScene");
         }
     }
 }

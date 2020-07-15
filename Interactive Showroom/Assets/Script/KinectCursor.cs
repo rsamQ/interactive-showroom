@@ -42,8 +42,9 @@ public class KinectCursor : MonoBehaviour
 
 
 
-    //  
+    // Called once at Start of Game
     void Start(){
+
         // Hide Cursor on Start and set cursor sprite
         Cursor.visible = false;
         rend = obj.GetComponent<SpriteRenderer>();
@@ -56,11 +57,13 @@ public class KinectCursor : MonoBehaviour
         exitButton = GameObject.Find("ExitButton");
         exitButton.SetActive(false);
 
+        // Hide all Objects with Tag UI
         uiCanvas = GameObject.FindGameObjectsWithTag("UI") as GameObject[];
+
         foreach(GameObject canvas in uiCanvas){
-            //Debug.Log("one: " + canvas);
-            if(canvas.layer == 5)
-            canvas.SetActive(false);
+            if(canvas.layer == 5){
+                canvas.SetActive(false);
+            }
         }
 
         // Get Body Source Manager Data
@@ -75,13 +78,15 @@ public class KinectCursor : MonoBehaviour
 
     // Update is called once per frame
     void Update(){
-        TrackHandCursor();
+
+        HandCursor();
     }
 
 
+    
+    void HandCursor(){
 
-    void TrackHandCursor(){
-
+        // Check if BodyManager is available
         if(bodyManager == null){
             return;
         }
@@ -98,9 +103,13 @@ public class KinectCursor : MonoBehaviour
                 continue;
             }
 
+            // Set default distance
             float distance = 1000;
+
+            // Set 2nd distance to tracked persons head position
             float distanceNew = body.Joints[JointType.Head].Position.Z;
 
+            //
             if (distanceNew !=0 && distanceNew <= distance){
                 distance = distanceNew;
 
@@ -110,9 +119,12 @@ public class KinectCursor : MonoBehaviour
                     var handLeft = body.Joints[JointType.HandLeft];
                     var handRight = body.Joints[JointType.HandRight];
 
+                    // Create Raycast if left Hand is higher than right hand
                     if(handLeft.Position.Y > handRight.Position.Y){
                         CursorMovement(handLeft.Position.X, handLeft.Position.Y);
                         GenerateRaycast(body, handLeft.Position.Y, handRight.Position.Y);
+
+                    // Create Raycast if right Hand is higher than left hand
                     }else if(handRight.Position.Y > handLeft.Position.Y){
                         CursorMovement(handRight.Position.X, handRight.Position.Y);
                         GenerateRaycast(body, handLeft.Position.Y, handRight.Position.Y);
@@ -126,64 +138,66 @@ public class KinectCursor : MonoBehaviour
     
     void GenerateRaycast(Body body, float x, float y){
 
-        // Create RayCast
-      RaycastHit hit;
-      Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position); // WorldToScreenPoint of object position for perspective correction
-      Ray _ray = Camera.main.ScreenPointToRay(pos);
+        // Create RayCast for 3D Objects
+        RaycastHit hit;
 
-      // Show/Hide continents on RaycastHit (Cursor hover over continent)
-      if(Physics.Raycast(_ray, out hit, rayLength, layermask)){
+        // WorldToScreenPoint of object position for perspective correction
+        Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position); 
+        Ray _ray = Camera.main.ScreenPointToRay(pos);
 
-        // Timer for 
-        timer += Time.deltaTime;
+        // Show/Hide continents on RaycastHit (Cursor hover over continent)
+        if(Physics.Raycast(_ray, out hit, rayLength, layermask)){
 
-        // Get hit continents
-        main = hit.collider.gameObject.GetComponent<MeshRenderer>();
-        
-        // No hand cursor if drag cursor is active
-        if(x > y && body.HandLeftState != HandState.Closed || y > x && body.HandRightState != HandState.Closed){
-            rend.sprite = handCursor;
-        }
+            // Timer for Delayed actions
+            timer += Time.deltaTime;
 
-        // Change object material name to string
-        string parentName = main.sharedMaterial.name;
+            // Get hit continents
+            main = hit.collider.gameObject.GetComponent<MeshRenderer>();
+            
+            // Hand Cursor sprite on raycast hit
+            /* @Todo: does not work somehow, need fixing */
+            //rend.sprite = handCursor; 
 
-        // Set up GameObject array for all selectable continents
-        GameObject[] parents  = GameObject.FindGameObjectsWithTag("Continent") as GameObject[];
+            // Change object material name to string
+            string parentName = main.sharedMaterial.name;
 
-        // Get all continents on selectable layer
-        foreach(GameObject parent in parents){
+            // Set up GameObject array for all selectable continents
+            GameObject[] parents  = GameObject.FindGameObjectsWithTag("Continent") as GameObject[];
 
-          // Is GameObject on Selectable rendering layer
-          if(parent.layer == 9){
+            // Get all continents on selectable layer
+            foreach(GameObject parent in parents){
 
-            // Get MeshRenderer from all continent objects including rim and change them to 0
-            // except for hit continent
-            MeshRenderer parentObject = parent.GetComponent<MeshRenderer>();
-            MeshRenderer childObject = parentObject.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
+                // Is GameObject on Selectable rendering layer
+                if(parent.layer == 9){
 
-            if(parentObject.material.name == parentName){
-              Show(alpha, parentObject, childObject);
-            }else{
-              Hide(alpha, parentObject, childObject);
+                    // Get MeshRenderer from all continent objects including rim and change them to 0
+                    // except for hit continent
+                    MeshRenderer parentObject = parent.GetComponent<MeshRenderer>();
+                    MeshRenderer childObject = parentObject.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>();
+
+                    if(parentObject.material.name == parentName){
+                    Show(alpha, parentObject, childObject);
+                    }else{
+                    Hide(alpha, parentObject, childObject);
+                    }
+                }
             }
-          }
-        } 
-        HoverGesture(main);
 
-      // on miss change back to main cursor and fade out continent
-      }else{
+            HoverGesture(main);
 
-        // Get continent and continent rim material
-        /* @Todo: fix child out of bounds if possible */
-        parent = main.sharedMaterial;
-        child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().sharedMaterial;
+        // on miss change back to main cursor and fade out continent
+        }else{
 
-        // Set material alpha value to 0
-        alpha = 0.0f;
-        child.SetFloat("_Alpha", alpha);
-        parent.SetFloat("_Alpha", alpha);
-      }
+            // Get continent and continent rim material
+            /* @Todo: fix child out of bounds if possible */
+            parent = main.sharedMaterial;
+            child = main.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().sharedMaterial;
+
+            // Set material alpha value to 0
+            alpha = 0.0f;
+            child.SetFloat("_Alpha", alpha);
+            parent.SetFloat("_Alpha", alpha);
+        }
     }
       
 
@@ -237,7 +251,7 @@ public class KinectCursor : MonoBehaviour
     
 
 
-    // Show continent and continent rim on raycast hit
+    // Show continent and continent rim 
     void Show(float alpha, MeshRenderer parentObject, MeshRenderer childObject){
       alpha = 1.0f;
       parentObject.material.SetFloat("_Alpha", alpha);
@@ -246,7 +260,7 @@ public class KinectCursor : MonoBehaviour
 
 
 
-    // Hide continent and continent rim on raycast hit
+    // Hide continent and continent rim 
     void Hide(float alpha, MeshRenderer parentObject, MeshRenderer childObject){
       alpha = 0.0f;
       parentObject.material.SetFloat("_Alpha", alpha);
