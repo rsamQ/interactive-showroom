@@ -26,10 +26,10 @@ MonoBehaviour:
   m_Values:
   - '{}'
   - '{}'
-  - '{"position":{"x":700.0,"y":780.0,"z":0.0},"scale":{"x":0.6109643578529358,"y":0.6109643578529358,"z":1.0}}'
-  - '{"m_Version":0,"m_SelectedElementsArray":[]}'
   - '{}'
   - '{}'
+  - '{"position":{"x":1149.0,"y":239.0,"z":0.0},"scale":{"x":0.7561436891555786,"y":0.7561436891555786,"z":1.0}}'
+  - '{"m_Version":33,"m_SelectedElementsArray":[]}'
   - '{}'
   - '{}'
   - '{}'
